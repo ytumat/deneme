@@ -431,32 +431,30 @@ const kod = formatDersKodu(kodRaw);
       scale: 3,
       useCORS: true,
       logging: false
+      windowWidth: 794
     }).then(canvas => {
       const imgData = canvas.toDataURL("image/png");
 
       const pdfWidth = 210;
-      const pdfHeight = 297;
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
-      const pxPerMm = canvasWidth / pdfWidth;
-      const imgHeightInPdf = canvasHeight / pxPerMm;
+const pdfHeight = 297;
+const canvasWidth = canvas.width;
+const canvasHeight = canvas.height;
+const pxPerMm = canvasWidth / pdfWidth;
+const imgHeightInPdf = canvasHeight / pxPerMm;
 
-      const pdf = new window.jspdf.jsPDF({
-        unit: "mm",
-        format: "a4",
-        orientation: "portrait"
-      });
+const pdf = new window.jspdf.jsPDF({
+  unit: "mm",
+  format: "a4",
+  orientation: "portrait"
+});
 
-      let renderHeight = imgHeightInPdf;
-      let renderWidth = pdfWidth;
+// Sabit genişlik (pdfWidth), yükseklik orantılı ayarlanıyor
+const renderWidth = pdfWidth;
+const renderHeight = (canvasHeight * pdfWidth) / canvasWidth;
 
-      if (imgHeightInPdf > pdfHeight) {
-        const scale = pdfHeight / imgHeightInPdf;
-        renderHeight = pdfHeight;
-        renderWidth = pdfWidth * scale;
-      }
+pdf.addImage(imgData, "PNG", 0, 0, renderWidth, renderHeight);
 
-      pdf.addImage(imgData, "PNG", 0, 0, renderWidth, renderHeight);
+
 
 pdf.setFont("helvetica", "italic"); // italik font
 pdf.setFontSize(8);
